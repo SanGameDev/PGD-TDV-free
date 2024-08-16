@@ -23,13 +23,16 @@ public class RoomPropeties : MonoBehaviour
         
         foreach (var direction in VecDirections)
         {
-            Vector2Int positionToCheck = 
-            new Vector2Int(DistanceBetweenRooms(direction.x, roomSize.x, hallsLength), DistanceBetweenRooms(direction.y, roomSize.y, hallsLength));
+            Vector2 positionToCheck = (Vector2)transform.position + 
+            new Vector2(DistanceBetweenRooms(direction.x, roomSize.x, hallsLength), DistanceBetweenRooms(direction.y, roomSize.y, hallsLength));
+            //Debug.Log("Checking neighbors" + positionToCheck);
 
             foreach (var room in FindObjectOfType<DungeonGenerator>().roomsReferences)
             {
-                if (room.transform.position == grid.GetCellCenterWorld(new Vector3Int(positionToCheck.x, positionToCheck.y, 0)))
+                //Debug.Log("Checking neighbors" + room.transform.position + " " + grid.WorldToCell(positionToCheck));
+                if ((Vector2)room.transform.position == positionToCheck)
                 {
+                    Debug.Log("Neighbor found");
                     if (direction == VecDirections[0])
                     {
                         neighbors.Add(RoomNeighbors.North);

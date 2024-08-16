@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
-public class RoomGeneration : MonoBehaviour
+public class RoomGeneration : MonoBehaviour // Todo: this script was a test, it's not gona be used
 {
 
     public void RoomsGeneration()

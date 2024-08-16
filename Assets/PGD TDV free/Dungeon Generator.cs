@@ -38,11 +38,18 @@ public class DungeonGenerator : MonoBehaviour
 
     public void GetRoomsNeighbors()
     {
-        roomsReferences[0].GetComponent<RoomPropeties>().CheckNeighbors(roomsSize, grid, hallsLength);
+        //roomsReferences[1].GetComponent<RoomPropeties>().CheckNeighbors(roomsSize, grid, hallsLength);
         foreach (var room in roomsReferences)
         {
-            //room.GetComponent<RoomPropeties>().CheckNeighbors(roomsSize, grid, hallsLength);
+            room.GetComponent<RoomPropeties>().CheckNeighbors(roomsSize, grid, hallsLength);
         }
+
+        SetRoomsTiles();
+    }
+
+    public void SetRoomsTiles()
+    {
+        GetComponent<RoomTilePlacement>().StartLoopForTilePlacement();
     }
 
     private void Start() {
