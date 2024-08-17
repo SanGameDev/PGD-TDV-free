@@ -123,7 +123,6 @@ public class RoomReferenceGeneration : MonoBehaviour
         {
             if (room.position == new Vector3(newPosition.x, newPosition.y, 0))
             {
-                Debug.Log("Room reference in position");
                 return true;
             }
         }

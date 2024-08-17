@@ -32,7 +32,6 @@ public class RoomPropeties : MonoBehaviour
                 //Debug.Log("Checking neighbors" + room.transform.position + " " + grid.WorldToCell(positionToCheck));
                 if ((Vector2)room.transform.position == positionToCheck)
                 {
-                    Debug.Log("Neighbor found");
                     if (direction == VecDirections[0])
                     {
                         neighbors.Add(RoomNeighbors.North);

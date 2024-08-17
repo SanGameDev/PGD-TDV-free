@@ -533,12 +533,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomsReferences: []
-  numberOfRooms: 5
+  numberOfRooms: 8
   initialPosition: {x: 0, y: 0}
   roomsSize: {x: 18, y: 10}
   hasHalls: 1
   hallsLength: 5
-  hallsWidth: 2
+  hallsWidth: 4
   grid: {fileID: 1245664400}
   wallsTileMap: {fileID: 868408713}
   wallTile: {fileID: 11400000, guid: 86cc6318cb48e764f95bb65566fbffd2, type: 2}
