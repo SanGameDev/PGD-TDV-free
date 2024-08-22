@@ -50,6 +50,16 @@ public class DungeonGenerator : MonoBehaviour
     public void SetRoomsTiles()
     {
         GetComponent<RoomTilePlacement>().StartLoopForTilePlacement();
+
+        SetColliders();
+    }
+
+    public void SetColliders()
+    {
+        foreach (var room in roomsReferences)
+        {
+            room.GetComponent<RoomPropeties>().SetRoomProperties();
+        }
     }
 
     private void Start() {

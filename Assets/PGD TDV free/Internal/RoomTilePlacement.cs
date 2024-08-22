@@ -48,10 +48,11 @@ public class RoomTilePlacement : MonoBehaviour
                 dungeonGenerator.floorsTileMap.SetTile(topDoorPosition, dungeonGenerator.floorTile);
                 dungeonGenerator.wallsTileMap.SetTile(topDoorPosition, null);
                 dungeonGenerator.doorsMap.SetTile(topDoorPosition, dungeonGenerator.doorTile);
+
                 if (!IsPathPlaced(new Vector3Int(topDoorPosition.x, topDoorPosition.y + 1, 0), Vector3Int.up))
                 {
                     CreatePathBetweenRooms(new Vector3Int(topDoorPosition.x, topDoorPosition.y + 1, 0), Vector3Int.up);
-                    CreatePathWalls(new Vector3Int(topDoorPosition.x, topDoorPosition.y + 1, 0), Vector3Int.up);
+                    //CreatePathWalls(new Vector3Int(topDoorPosition.x, topDoorPosition.y + 1, 0), Vector3Int.up);
                 }
             }
             if(room.GetComponent<RoomPropeties>().neighbors.Contains(RoomNeighbors.South))
@@ -60,10 +61,11 @@ public class RoomTilePlacement : MonoBehaviour
                 dungeonGenerator.floorsTileMap.SetTile(bottomDoorPosition, dungeonGenerator.floorTile);
                 dungeonGenerator.wallsTileMap.SetTile(bottomDoorPosition, null);
                 dungeonGenerator.doorsMap.SetTile(bottomDoorPosition, dungeonGenerator.doorTile);
+
                 if (!IsPathPlaced(new Vector3Int(bottomDoorPosition.x, bottomDoorPosition.y - 1, 0), Vector3Int.down))
                 {
                     CreatePathBetweenRooms(new Vector3Int(bottomDoorPosition.x, bottomDoorPosition.y - 1, 0), Vector3Int.down);
-                    CreatePathWalls(new Vector3Int(bottomDoorPosition.x, bottomDoorPosition.y - 1, 0), Vector3Int.down);
+                    //CreatePathWalls(new Vector3Int(bottomDoorPosition.x, bottomDoorPosition.y - 1, 0), Vector3Int.down);
                 }
             }
             if(room.GetComponent<RoomPropeties>().neighbors.Contains(RoomNeighbors.East))
@@ -72,10 +74,11 @@ public class RoomTilePlacement : MonoBehaviour
                 dungeonGenerator.floorsTileMap.SetTile(rightDoorPosition, dungeonGenerator.floorTile);
                 dungeonGenerator.wallsTileMap.SetTile(rightDoorPosition, null);
                 dungeonGenerator.doorsMap.SetTile(rightDoorPosition, dungeonGenerator.doorTile);
+
                 if (!IsPathPlaced(new Vector3Int(rightDoorPosition.x + 1, rightDoorPosition.y, 0), Vector3Int.right))
                 {
                     CreatePathBetweenRooms(new Vector3Int(rightDoorPosition.x + 1, rightDoorPosition.y, 0), Vector3Int.right);
-                    CreatePathWalls(new Vector3Int(rightDoorPosition.x + 1, rightDoorPosition.y, 0), Vector3Int.right);
+                    //CreatePathWalls(new Vector3Int(rightDoorPosition.x + 1, rightDoorPosition.y, 0), Vector3Int.right);
                 }
             }
             if(room.GetComponent<RoomPropeties>().neighbors.Contains(RoomNeighbors.West))
@@ -84,18 +87,39 @@ public class RoomTilePlacement : MonoBehaviour
                 dungeonGenerator.floorsTileMap.SetTile(leftDoorPosition, dungeonGenerator.floorTile);
                 dungeonGenerator.wallsTileMap.SetTile(leftDoorPosition, null);
                 dungeonGenerator.doorsMap.SetTile(leftDoorPosition, dungeonGenerator.doorTile);
+
                 if (!IsPathPlaced(new Vector3Int(leftDoorPosition.x - 1, leftDoorPosition.y, 0), Vector3Int.left))
                 {
                     CreatePathBetweenRooms(new Vector3Int(leftDoorPosition.x - 1, leftDoorPosition.y, 0), Vector3Int.left);
-                    CreatePathWalls(new Vector3Int(leftDoorPosition.x - 1, leftDoorPosition.y, 0), Vector3Int.left);
+                    //CreatePathWalls(new Vector3Int(leftDoorPosition.x - 1, leftDoorPosition.y, 0), Vector3Int.left);
                 }
+            }
+        }
+
+        // Create path walls for the room
+        foreach(var neighbor in room.GetComponent<RoomPropeties>().neighbors)
+        {
+            if (neighbor == RoomNeighbors.North)
+            {
+                CreatePathWalls(new Vector3Int(roomCenter.x + dungeonGenerator.roomsSize.x / 2, roomCenter.y + dungeonGenerator.roomsSize.y - 1, 0), Vector3Int.up);
+            }
+            else if (neighbor == RoomNeighbors.South)
+            {
+                CreatePathWalls(new Vector3Int(roomCenter.x + dungeonGenerator.roomsSize.x / 2, roomCenter.y, 0), Vector3Int.down);
+            }
+            else if (neighbor == RoomNeighbors.East)
+            {
+                CreatePathWalls(new Vector3Int(roomCenter.x + dungeonGenerator.roomsSize.x - 1, roomCenter.y + dungeonGenerator.roomsSize.y / 2, 0), Vector3Int.right);
+            }
+            else if (neighbor == RoomNeighbors.West)
+            {
+                CreatePathWalls(new Vector3Int(roomCenter.x, roomCenter.y + dungeonGenerator.roomsSize.y / 2, 0), Vector3Int.left);
             }
         }
     }
     
     private bool IsPathPlaced(Vector3Int startPosition, Vector3Int direction)
     {
-        // Verificar si el camino ya está colocado
         for (int i = 0; i < dungeonGenerator.hallsLength; i++)
         {
             Vector3Int position = startPosition + direction * i;
@@ -139,37 +163,48 @@ public class RoomTilePlacement : MonoBehaviour
 
     private void CreateVerticalWalls(Vector3Int position, int halfWidth, bool isOddWidth)
     {
+        // Verificar si halfWidth es impar y ajustarlo
+        if (halfWidth % 2 != 0)
+        {
+            halfWidth++;
+        }
+
         for (int j = 1; j <= halfWidth; j++)
         {
-            Vector3Int leftPosition = new Vector3Int(position.x - j, position.y, 0);
+            Vector3Int leftPosition;
+
+            if(!isOddWidth)
+                leftPosition = new Vector3Int(position.x - j - 1, position.y, 0);
+            else
+                leftPosition = new Vector3Int(position.x - j, position.y, 0);
+            
             Vector3Int rightPosition = new Vector3Int(position.x + j, position.y, 0);
 
             PlaceWallIfEmpty(leftPosition);
             PlaceWallIfEmpty(rightPosition);
         }
-
-        if (isOddWidth)
-        {
-            Vector3Int centerPosition = new Vector3Int(position.x, position.y, 0);
-            PlaceWallIfEmpty(centerPosition);
-        }
     }
 
     private void CreateHorizontalWalls(Vector3Int position, int halfWidth, bool isOddWidth)
     {
+        // Verificar si halfWidth es impar y ajustarlo
+        if (halfWidth % 2 != 0)
+        {
+            halfWidth++;
+        }
+
         for (int j = 1; j <= halfWidth; j++)
         {
             Vector3Int topPosition = new Vector3Int(position.x, position.y + j, 0);
-            Vector3Int bottomPosition = new Vector3Int(position.x, position.y - j, 0);
+                
+            Vector3Int bottomPosition;
+            if(!isOddWidth)
+                bottomPosition = new Vector3Int(position.x, position.y - j - 1, 0);
+            else
+                bottomPosition = new Vector3Int(position.x, position.y - j, 0);
 
             PlaceWallIfEmpty(topPosition);
             PlaceWallIfEmpty(bottomPosition);
-        }
-
-        if (isOddWidth)
-        {
-            Vector3Int centerPosition = new Vector3Int(position.x, position.y, 0);
-            PlaceWallIfEmpty(centerPosition);
         }
     }
 

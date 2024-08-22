@@ -72,64 +72,16 @@ public class RoomPropeties : MonoBehaviour
 
     public void SetRoomProperties()
     {
-        
+        // Add a collider to the room
+        GiveTheRoomCollider();
     }
 
-    private void GiveTheRoomCollider(Transform roomReference)
+    private void GiveTheRoomCollider()
     {
-        // get the room size
-        // get the room position
-        // calculate the collider size
-        // calculate the collider position
-        // instantiate the collider in that position
+        // Add a collider to the room
+        BoxCollider2D roomCollider = this.gameObject.AddComponent<BoxCollider2D>();
+        //get the room size from the DungeonGenerator
+        roomCollider.size = new Vector2(FindObjectOfType<DungeonGenerator>().roomsSize.x, FindObjectOfType<DungeonGenerator>().roomsSize.y);
+        roomCollider.offset = new Vector2(-0.5f, -0.5f);
     }
 }
-
-/*
-DungeonGenerator dungeonGenerator = FindObjectOfType<DungeonGenerator>();
-        Vector2Int thisPosition = new Vector2Int((int)transform.position.x, (int)transform.position.y);
-
-        if (neighbors == null)
-        {
-            neighbors = new List<RoomNeighbors>();
-        }
-
-            Vector2Int north = thisPosition + distancesToNeighbors * new Vector2Int(0, 1);  // Up
-            Vector2Int south = thisPosition + distancesToNeighbors * new Vector2Int(0, -1); // Down
-            Vector2Int west = thisPosition + distancesToNeighbors * new Vector2Int(-1, 0); // Left
-            Vector2Int east = thisPosition + distancesToNeighbors * new Vector2Int(1, 0);   // Right
-        
-        for (int i = 0; i < 4; i++)
-        {
-            //Vector2Int neighborPosition = thisPosition + distancesToNeighbors * direction;
-
-            //Debug.Log("Checking neighbors" + neighborPosition);
-
-            //Debug.Log("Rooms" + grid.GetComponentsInChildren<RoomPropeties>().Length);
-            foreach (var room in dungeonGenerator.roomsReferences)
-            {
-                Debug.Log("Checking neighbors" + room.transform.position + " " + grid.GetCellCenterWorld(new Vector3Int(north.x, north.y, 0)));
-
-                if (room.transform.position == grid.GetCellCenterWorld(new Vector3Int(north.x, north.y, 0)))
-                {
-                    Debug.Log("Neighbor found");
-                    neighbors.Add(RoomNeighbors.North);
-                }
-                else if (room.transform.position == grid.GetCellCenterWorld(new Vector3Int(south.x, south.y, 0)))
-                {
-                    Debug.Log("Neighbor found");
-                    neighbors.Add(RoomNeighbors.South);
-                }
-                else if (room.transform.position == grid.GetCellCenterWorld(new Vector3Int(west.x, west.y, 0)))
-                {
-                    Debug.Log("Neighbor found");
-                    neighbors.Add(RoomNeighbors.West);
-                }
-                else if (room.transform.position == grid.GetCellCenterWorld(new Vector3Int(east.x, east.y, 0)))
-                {
-                    Debug.Log("Neighbor found");
-                    neighbors.Add(RoomNeighbors.East);
-                }
-            }
-        }
-        */

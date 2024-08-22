@@ -533,7 +533,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomsReferences: []
-  numberOfRooms: 8
+  numberOfRooms: 15
   initialPosition: {x: 0, y: 0}
   roomsSize: {x: 18, y: 10}
   hasHalls: 1
@@ -710,5 +710,5 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
-  - {fileID: 1770000612}
   - {fileID: 1245664401}
+  - {fileID: 1770000612}
