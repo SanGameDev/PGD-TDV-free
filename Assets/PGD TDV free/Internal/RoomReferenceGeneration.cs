@@ -74,7 +74,7 @@ public class RoomReferenceGeneration : MonoBehaviour
             }
         };
 
-        GetComponent<DungeonGenerator>().GetRoomsNeighbors();
+        //GetComponent<DungeonGenerator>().GetRoomsNeighbors();
         
     }
 

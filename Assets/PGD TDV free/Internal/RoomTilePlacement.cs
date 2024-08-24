@@ -216,3 +216,35 @@ public class RoomTilePlacement : MonoBehaviour
         }
     }
 }
+
+/*
+private List<Vector3Int> CalculateDoorTilePositions(Vector2Int roomCenter, Vector2Int roomSize, int hallWidth, RoomNeighbors neighborDirection)
+{
+    List<Vector3Int> doorPositions = new List<Vector3Int>();
+
+    for (int i = 0; i < hallWidth; i++)
+    {
+        Vector3Int doorPosition = Vector3Int.zero;
+
+        switch (neighborDirection)
+        {
+            case RoomNeighbors.North:
+                doorPosition = new Vector3Int(roomCenter.x + roomSize.x / 2 - hallWidth / 2 + i, roomCenter.y + roomSize.y - 1, 0);
+                break;
+            case RoomNeighbors.South:
+                doorPosition = new Vector3Int(roomCenter.x + roomSize.x / 2 - hallWidth / 2 + i, roomCenter.y, 0);
+                break;
+            case RoomNeighbors.East:
+                doorPosition = new Vector3Int(roomCenter.x + roomSize.x - 1, roomCenter.y + roomSize.y / 2 - hallWidth / 2 + i, 0);
+                break;
+            case RoomNeighbors.West:
+                doorPosition = new Vector3Int(roomCenter.x, roomCenter.y + roomSize.y / 2 - hallWidth / 2 + i, 0);
+                break;
+        }
+
+        doorPositions.Add(doorPosition);
+    }
+
+    return doorPositions;
+}
+*/
