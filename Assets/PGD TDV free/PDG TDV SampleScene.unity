@@ -419,8 +419,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1770000612}
   - component: {fileID: 1770000611}
-  - component: {fileID: 1770000613}
-  - component: {fileID: 1770000614}
   m_Layer: 0
   m_Name: DungeonGenerator
   m_TagString: Untagged
@@ -441,11 +439,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomsReferences: []
-  numberOfRooms: 15
+  numberOfRooms: 8
   initialPosition: {x: 0, y: 0}
   roomsSize: {x: 18, y: 10}
-  hasHalls: 1
-  hallsLength: 5
+  hallsLength: 6
   hallsWidth: 4
   grid: {fileID: 1245664400}
   wallsTileMap: {fileID: 868408713}
@@ -469,30 +466,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1770000613
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1770000609}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2f5c082f7f404174bbb2c50441206316, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1770000614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1770000609}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 87945fcf10233344ba26cde9ef68edeb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2056674442
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,7 +9,17 @@ public static class TileCalculate
         return new Vector2Int(roomPosition.x - roomSize.x / 2, roomPosition.y - roomSize.y / 2);
     }
 
-    public static List<Vector2Int> DoorTilePosition(Vector2Int roomCenter, Vector2Int roomsSize, int hallsWidth, int i, RoomNeighbors direction)
+    public static bool IsWallTIle(Vector2Int position, Vector2Int roomCenter, Vector2Int roomSize)
+    {
+        if(position.x == roomCenter.x || position.x == roomCenter.x + roomSize.x - 1 || position.y == roomCenter.y || position.y == roomCenter.y + roomSize.y - 1)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public static List<Vector2Int> DoorTilePosition(Vector2Int roomCenter, Vector2Int roomsSize, int hallsWidth, RoomNeighbors direction)
     {
         List<Vector2Int> doorsTilePosition = new List<Vector2Int>();
 
@@ -17,32 +27,94 @@ public static class TileCalculate
         {
             if(direction == RoomNeighbors.North)
             {
-                doorsTilePosition.Add(new Vector2Int(roomCenter.x + i, roomCenter.y + roomsSize.y / 2 + j));
+                doorsTilePosition.Add(new Vector2Int(roomCenter.x + roomsSize.x / 2 - hallsWidth / 2 + j, roomCenter.y + roomsSize.y - 1));
             }
             else if(direction == RoomNeighbors.South)
             {
-                doorsTilePosition.Add(new Vector2Int(roomCenter.x + i, roomCenter.y - roomsSize.y / 2 - j));
+                doorsTilePosition.Add(new Vector2Int(roomCenter.x + roomsSize.x / 2 - hallsWidth / 2 + j, roomCenter.y));
             }
             else if(direction == RoomNeighbors.East)
             {
-                doorsTilePosition.Add(new Vector2Int(roomCenter.x + roomsSize.x / 2 + j, roomCenter.y + i));
+                doorsTilePosition.Add(new Vector2Int(roomCenter.x + roomsSize.x - 1, roomCenter.y + roomsSize.y / 2 - hallsWidth / 2 + j));
             }
             else if(direction == RoomNeighbors.West)
             {
-                doorsTilePosition.Add(new Vector2Int(roomCenter.x - roomsSize.x / 2 - j, roomCenter.y + i));
+                doorsTilePosition.Add(new Vector2Int(roomCenter.x, roomCenter.y + roomsSize.y / 2 - hallsWidth / 2 + j));
             }
         }
 
         return doorsTilePosition;
     }
 
-    public static bool IsWallTIle(Vector2Int position, Vector2Int roomPosition, Vector2Int roomSize)
+    public static List<Vector2Int> HallTilePosition(Vector2Int roomCenter, Vector2Int roomsSize, int hallsWidth, RoomNeighbors direction, int hallsLength)
     {
-        if(position.x == roomPosition.x || position.x == roomPosition.x + roomSize.x - 1 || position.y == roomPosition.y || position.y == roomPosition.y + roomSize.y - 1)
+        List<Vector2Int> hallsTilePosition = new List<Vector2Int>();
+
+        for(int i = 0; i < hallsLength; i++)
         {
-            return true;
+            for(int j = 0; j < hallsWidth; j++)
+            {
+                if(direction == RoomNeighbors.North)
+                {
+                    hallsTilePosition.Add(new Vector2Int(roomCenter.x + roomsSize.x / 2 - hallsWidth / 2 + j, roomCenter.y + roomsSize.y + i));
+                }
+                else if(direction == RoomNeighbors.South)
+                {
+                    hallsTilePosition.Add(new Vector2Int(roomCenter.x + roomsSize.x / 2 - hallsWidth / 2 + j, roomCenter.y - i - 1));
+                }
+                else if(direction == RoomNeighbors.East)
+                {
+                    hallsTilePosition.Add(new Vector2Int(roomCenter.x + roomsSize.x + i, roomCenter.y + roomsSize.y / 2 - hallsWidth / 2 + j));
+                }
+                else if(direction == RoomNeighbors.West)
+                {
+                    hallsTilePosition.Add(new Vector2Int(roomCenter.x - i - 1, roomCenter.y + roomsSize.y / 2 - hallsWidth / 2 + j));
+                }
+            }
         }
 
-        return false;
+        return hallsTilePosition;
+    }
+
+    public static List<Vector2Int> HallsWallsTilePosition(Vector2Int roomCenter, Vector2Int roomsSize, int hallsWidth, RoomNeighbors direction, int hallsLength)
+    {
+        List<Vector2Int> hallsWallsTilePosition = new List<Vector2Int>();
+
+        for (int i = 0; i < hallsLength; i++)
+        {
+            for (int j = 0; j < hallsWidth; j++)
+            {
+                if (direction == RoomNeighbors.North || direction == RoomNeighbors.South)
+                {
+                    Vector2Int leftWallPosition = new Vector2Int(roomCenter.x + roomsSize.x / 2 - hallsWidth / 2 - 1, roomCenter.y + roomsSize.y + i);
+                    Vector2Int rightWallPosition = new Vector2Int(roomCenter.x + roomsSize.x / 2 + hallsWidth / 2, roomCenter.y + roomsSize.y + i);
+
+                    if (direction == RoomNeighbors.South)
+                    {
+                        leftWallPosition.y = roomCenter.y - i - 1;
+                        rightWallPosition.y = roomCenter.y - i - 1;
+                    }
+
+                    hallsWallsTilePosition.Add(leftWallPosition);
+                    hallsWallsTilePosition.Add(rightWallPosition);
+                }
+                else if (direction == RoomNeighbors.East || direction == RoomNeighbors.West)
+                {
+                    Vector2Int topWallPosition = new Vector2Int(roomCenter.x + roomsSize.x + i, roomCenter.y + roomsSize.y / 2 + hallsWidth / 2);
+                    Vector2Int bottomWallPosition = new Vector2Int(roomCenter.x + roomsSize.x + i, roomCenter.y + roomsSize.y / 2 - hallsWidth / 2 - 1);
+
+                    if (direction == RoomNeighbors.West)
+                    {
+                        topWallPosition.x = roomCenter.x - i - 1;
+                        bottomWallPosition.x = roomCenter.x - i - 1;
+                    }
+
+                    hallsWallsTilePosition.Add(topWallPosition);
+                    hallsWallsTilePosition.Add(bottomWallPosition);
+                }
+            }
+        }
+
+        return hallsWallsTilePosition;
     }
 }

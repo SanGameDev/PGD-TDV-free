@@ -4,40 +4,6 @@ using UnityEngine;
 
 public static class CheckNeighbors
 {
-    public static bool CheckFreePositions(Transform room, List<Transform> roomsReferences, Vector2 direction, Vector2 roomSize, int hallsLengt)
-    {
-        foreach(Transform roomReference in roomsReferences)
-        {
-            if(roomReference.position == new Vector3
-            (
-                room.position.x + DistanceToTheNeighbor((int)direction.x, (int)roomSize.x, hallsLengt),
-                room.position.y + DistanceToTheNeighbor((int)direction.y, (int)roomSize.y, hallsLengt),
-                0
-            ))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        return true;
-    }
-
-    public static int DistanceToTheNeighbor(int direction, int roomSize, int hallsLength)
-    {
-        if(hallsLength == 0)
-        {
-            return direction * roomSize;
-        }
-        else
-        {
-            return (direction * roomSize) + (direction * hallsLength);
-        }
-    }
-
     public static Vector2 RandomDirection()
     {
         switch (UnityEngine.Random.Range(0, 4))
@@ -53,5 +19,48 @@ public static class CheckNeighbors
         }
 
         return Vector2.zero;
+    }
+
+    public static bool CheckFreePositions(Vector3 room, List<Transform> roomsReferences)
+    {
+        foreach(Transform roomReference in roomsReferences)
+        {
+            if(roomReference.position == room)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static int DistanceToTheNeighbor(int direction, int roomSize, int hallsLength)
+    {
+        if(hallsLength == 0)
+        {
+            return direction * roomSize;
+        }
+        else
+        {
+            return (direction * roomSize) + (direction * hallsLength);
+        }
+    }
+
+    public static List<RoomNeighbors> CheckForNeighbors(Vector3 room, List<Transform> roomsReferences, Vector2 roomSize, int hallsLength)
+    {
+        List<RoomNeighbors> neighbors = new List<RoomNeighbors>();
+
+        if(!CheckFreePositions(new Vector3(room.x + DistanceToTheNeighbor(1, (int)roomSize.x, hallsLength), room.y, 0), roomsReferences))
+            neighbors.Add(RoomNeighbors.East);
+
+        if(!CheckFreePositions(new Vector3(room.x + DistanceToTheNeighbor(-1, (int)roomSize.x, hallsLength), room.y, 0), roomsReferences))
+            neighbors.Add(RoomNeighbors.West);
+
+        if(!CheckFreePositions(new Vector3(room.x, room.y + DistanceToTheNeighbor(1, (int)roomSize.y, hallsLength), 0), roomsReferences))
+            neighbors.Add(RoomNeighbors.North);
+
+        if(!CheckFreePositions(new Vector3(room.x, room.y + DistanceToTheNeighbor(-1, (int)roomSize.y, hallsLength), 0), roomsReferences))
+            neighbors.Add(RoomNeighbors.South);
+
+        return neighbors;
     }
 }
