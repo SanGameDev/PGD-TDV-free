@@ -49,18 +49,18 @@ public static class ColliderCalculation
         if (direction.x == 1)
         {
             size.x = hallLength;
-            size.y = hallWidth;
+            size.y = hallWidth + 2;
         }
         else if (direction.y == 1)
         {
-            size.x = hallWidth;
+            size.x = hallWidth + 2;
             size.y = hallLength;
         }
 
         return size;
     }
 
-    public static Vector2 HallwayColliderCenter(int hallLength, Vector2 roomSize, Vector2 direction)
+    public static Vector2 HallwayColliderCenter(int hallLength, Vector2 roomSize, Vector2 direction, bool isNonPairSize, bool roomIsNonPairSize)
     {
         Vector2 center = new Vector2();
     
@@ -73,6 +73,30 @@ public static class ColliderCalculation
         {
             center.x = 0;
             center.y = ((roomSize.y / 2) + (hallLength / 2.0f)) * direction.y;
+        }
+
+        if(isNonPairSize)
+        {
+            if(direction.x != 0)
+            {
+                center.y += 0.5f;
+            }
+            else if(direction.y != 0)
+            {
+                center.x += 0.5f;
+            }
+        }
+
+        if(roomIsNonPairSize)
+        {
+            if(direction.x != 0)
+            {
+                center.x += 0.5f;
+            }
+            else if(direction.y != 0)
+            {
+                center.y += 0.5f;
+            }
         }
 
         center.x -= 0.5f;

@@ -252,6 +252,15 @@ public class DungeonGenerator : MonoBehaviour
     private void SetColliders()
     {
         bool isNonPairSize = ColliderCalculation.IsNonPairSize(roomsSize);
+        bool isNonPairHalls;
+
+        if(hallsWidth % 2 != 0)
+        {
+            isNonPairHalls = true;
+        }else
+        {
+            isNonPairHalls = false;
+        }
 
         foreach (var room in roomsReferences)
         {
@@ -277,28 +286,28 @@ public class DungeonGenerator : MonoBehaviour
                         BoxCollider2D bC2D = room.transform.AddComponent<BoxCollider2D>();
                         bC2D.usedByComposite = true;
                         bC2D.size = ColliderCalculation.HallwayColliderSize(hallsWidth, hallsLength, Vector2.up);
-                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.up);
+                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.up, isNonPairHalls, isNonPairSize);
                     }
                     if(neighbor == RoomNeighbors.East)
                     {
                         BoxCollider2D bC2D = room.transform.AddComponent<BoxCollider2D>();
                         bC2D.usedByComposite = true;
                         bC2D.size = ColliderCalculation.HallwayColliderSize(hallsWidth, hallsLength, Vector2.right);
-                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.right);
+                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.right, isNonPairHalls, isNonPairSize);
                     }
                     if(neighbor == RoomNeighbors.South)
                     {
                         BoxCollider2D bC2D = room.transform.AddComponent<BoxCollider2D>();
                         bC2D.usedByComposite = true;
                         bC2D.size = ColliderCalculation.HallwayColliderSize(hallsWidth, hallsLength, Vector2.up);
-                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.down);
+                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.down, isNonPairHalls, isNonPairSize);
                     }
                     if(neighbor == RoomNeighbors.West)
                     {
                         BoxCollider2D bC2D = room.transform.AddComponent<BoxCollider2D>();
                         bC2D.usedByComposite = true;
                         bC2D.size = ColliderCalculation.HallwayColliderSize(hallsWidth, hallsLength, Vector2.right);
-                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.left);
+                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.left, isNonPairHalls, isNonPairSize);
                     }
                 }
             }
