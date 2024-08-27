@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -124,6 +125,7 @@ public class DungeonGenerator : MonoBehaviour
                 break;
             }
         }
+        AddGenerationProgress(30);
 
         //<summary>
         //  This method add the RoomProperties script to the rooms and starts a new List of RoomNeighbors
@@ -148,6 +150,7 @@ public class DungeonGenerator : MonoBehaviour
             room.GetComponent<RoomPropeties>().neighbors = neighbors;
         }
 
+        AddGenerationProgress(20);
         SetRoomsTiles();
     }
 
@@ -178,6 +181,7 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
+        AddGenerationProgress(10);
         SetDoors();
     }
 
@@ -204,6 +208,7 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
+        AddGenerationProgress(10);
         if(hallsLength > 0)
         {
             SetHalls();
@@ -237,6 +242,7 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
+        AddGenerationProgress(10);
         SetColliders();
     }
 
@@ -245,13 +251,15 @@ public class DungeonGenerator : MonoBehaviour
     //</summary>
     private void SetColliders()
     {
+        bool isNonPairSize = ColliderCalculation.IsNonPairSize(roomsSize);
+
         foreach (var room in roomsReferences)
         {
             room.transform.AddComponent<CompositeCollider2D>();
             room.transform.AddComponent<BoxCollider2D>();
 
-            room.GetComponent<BoxCollider2D>().size = new Vector2(roomsSize.x, roomsSize.y);
-            room.GetComponent<BoxCollider2D>().offset = new Vector2(-0.5f, -0.5f);
+            room.GetComponent<BoxCollider2D>().size = ColliderCalculation.RoomColliderSize(roomsSize);
+            room.GetComponent<BoxCollider2D>().offset = ColliderCalculation.RoomColliderCenter(isNonPairSize);
 
             room.GetComponent<CompositeCollider2D>().geometryType = CompositeCollider2D.GeometryType.Polygons;
             room.GetComponent<CompositeCollider2D>().isTrigger = true;
@@ -268,43 +276,54 @@ public class DungeonGenerator : MonoBehaviour
                     {
                         BoxCollider2D bC2D = room.transform.AddComponent<BoxCollider2D>();
                         bC2D.usedByComposite = true;
-                        bC2D.size = new Vector2(hallsWidth, hallsLength);
-                        bC2D.offset = new Vector2(0 - 0.5f, roomsSize.y / 2 + hallsLength / 2 - 0.5f);
+                        bC2D.size = ColliderCalculation.HallwayColliderSize(hallsWidth, hallsLength, Vector2.up);
+                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.up);
                     }
                     if(neighbor == RoomNeighbors.East)
                     {
                         BoxCollider2D bC2D = room.transform.AddComponent<BoxCollider2D>();
                         bC2D.usedByComposite = true;
-                        bC2D.size = new Vector2(hallsLength, hallsWidth);
-                        bC2D.offset = new Vector2(roomsSize.x / 2 + hallsLength / 2 - 0.5f, 0 - 0.5f);
+                        bC2D.size = ColliderCalculation.HallwayColliderSize(hallsWidth, hallsLength, Vector2.right);
+                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.right);
                     }
                     if(neighbor == RoomNeighbors.South)
                     {
                         BoxCollider2D bC2D = room.transform.AddComponent<BoxCollider2D>();
                         bC2D.usedByComposite = true;
-                        bC2D.size = new Vector2(hallsWidth, hallsLength);
-                        bC2D.offset = new Vector2(0 - 0.5f, -roomsSize.y / 2 - hallsLength / 2 - 0.5f);
+                        bC2D.size = ColliderCalculation.HallwayColliderSize(hallsWidth, hallsLength, Vector2.up);
+                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.down);
                     }
                     if(neighbor == RoomNeighbors.West)
                     {
                         BoxCollider2D bC2D = room.transform.AddComponent<BoxCollider2D>();
                         bC2D.usedByComposite = true;
-                        bC2D.size = new Vector2(hallsLength, hallsWidth);
-                        bC2D.offset = new Vector2(-roomsSize.x / 2 - hallsLength / 2 - 0.5f, 0 - 0.5f);
+                        bC2D.size = ColliderCalculation.HallwayColliderSize(hallsWidth, hallsLength, Vector2.right);
+                        bC2D.offset = ColliderCalculation.HallwayColliderCenter(hallsLength, roomsSize, Vector2.left);
                     }
                 }
             }
         }
+
+        AddGenerationProgress(20);
     }
 
     //<summary>
     //  This function adds the progress to the generation
     //</summary>
-    public void GetGenerationProgress(float progressToAdd)
+    public void AddGenerationProgress(float progressToAdd)
     {
-        float progress = Mathf.Lerp(generationProgress, generationProgress + progressToAdd, Time.deltaTime);
+        StartCoroutine(IncrementProgress(progressToAdd));
+    }
 
-        generationProgress = Mathf.Clamp(progress, 0, 100);
+    private IEnumerator IncrementProgress(float progressToAdd)
+    {
+       generationProgress += progressToAdd;
+        float targetProgress = Mathf.Clamp(generationProgress, 0, 100);
+        while (generationProgress < targetProgress)
+        {
+            generationProgress = Mathf.Clamp(generationProgress + (progressToAdd * Time.deltaTime), 0, 100);
+            yield return null;
+        }
     }
 }
 
