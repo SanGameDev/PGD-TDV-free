@@ -79,6 +79,7 @@ public static class TileCalculate
     public static List<Vector2Int> HallsWallsTilePosition(Vector2Int roomCenter, Vector2Int roomsSize, int hallsWidth, RoomNeighbors direction, int hallsLength)
     {
         List<Vector2Int> hallsWallsTilePosition = new List<Vector2Int>();
+        bool isNonPair = hallsWidth % 2 != 0;
 
         for (int i = 0; i < hallsLength; i++)
         {
@@ -88,6 +89,11 @@ public static class TileCalculate
                 {
                     Vector2Int leftWallPosition = new Vector2Int(roomCenter.x + roomsSize.x / 2 - hallsWidth / 2 - 1, roomCenter.y + roomsSize.y + i);
                     Vector2Int rightWallPosition = new Vector2Int(roomCenter.x + roomsSize.x / 2 + hallsWidth / 2, roomCenter.y + roomsSize.y + i);
+                    
+                    if(isNonPair)
+                    {
+                        rightWallPosition.x += 1;
+                    }
 
                     if (direction == RoomNeighbors.South)
                     {
@@ -102,6 +108,11 @@ public static class TileCalculate
                 {
                     Vector2Int topWallPosition = new Vector2Int(roomCenter.x + roomsSize.x + i, roomCenter.y + roomsSize.y / 2 + hallsWidth / 2);
                     Vector2Int bottomWallPosition = new Vector2Int(roomCenter.x + roomsSize.x + i, roomCenter.y + roomsSize.y / 2 - hallsWidth / 2 - 1);
+
+                    if (isNonPair)
+                    {
+                        topWallPosition.y += 1;
+                    }
 
                     if (direction == RoomNeighbors.West)
                     {
