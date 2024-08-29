@@ -21,14 +21,14 @@ public class DungeonGenerator : MonoBehaviour
 
 
     [Header("Tilemaps & Tiles")]
-    public Grid grid;
-
-    public Tilemap wallsTileMap;
     public Tile wallTile;
-    public Tilemap floorsTileMap;
     public Tile floorTile;
-    public Tilemap doorsMap;
     public Tile doorTile;
+
+    private Grid grid;
+    private Tilemap wallsTileMap;
+    private Tilemap floorsTileMap;
+    private Tilemap doorsMap;
 
     [Space(5)][Header("Generation")]
     public List<Transform> roomsReferences;
@@ -40,11 +40,21 @@ public class DungeonGenerator : MonoBehaviour
 
     public void GenerateDungeon()
     {
+        if(grid == null)
+        {
+            GenerateGrid();
+        }
+
         InstRoomRef();
     }
 
     public void ClearDungeon()
     {
+        if(grid == null)
+        {
+            return;
+        }
+
         foreach (var room in roomsReferences)
         {
             DestroyImmediate(room.gameObject);
@@ -251,7 +261,7 @@ public class DungeonGenerator : MonoBehaviour
     //</summary>
     private void SetColliders()
     {
-        bool isNonPairSize = ColliderCalculation.IsNonPairSize(roomsSize);
+        int isNonPairSize = ColliderCalculation.IsNonPairSize(roomsSize);
         bool isNonPairHalls;
 
         if(hallsWidth % 2 != 0)
@@ -334,7 +344,24 @@ public class DungeonGenerator : MonoBehaviour
             yield return null;
         }
     }
+
+    private void GenerateGrid()
+    {
+        grid = new GameObject("Grid").AddComponent<Grid>();
+        wallsTileMap = new GameObject("Walls").AddComponent<Tilemap>();
+        floorsTileMap = new GameObject("Floors").AddComponent<Tilemap>();
+        doorsMap = new GameObject("Doors").AddComponent<Tilemap>();
+
+        wallsTileMap.transform.SetParent(grid.transform);
+        floorsTileMap.transform.SetParent(grid.transform);
+        doorsMap.transform.SetParent(grid.transform);
+
+        wallsTileMap.gameObject.AddComponent<TilemapRenderer>().sortingOrder = -2;
+        floorsTileMap.gameObject.AddComponent<TilemapRenderer>().sortingOrder = -2;
+        doorsMap.gameObject.AddComponent<TilemapRenderer>().sortingOrder = -1;
+    }
 }
+
 
 public enum RoomNeighbors
 {

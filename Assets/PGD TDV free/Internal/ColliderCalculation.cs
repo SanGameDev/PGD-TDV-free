@@ -4,15 +4,23 @@ using UnityEngine;
 
 public static class ColliderCalculation
 {
-    public static bool IsNonPairSize(Vector2 roomSize)
+    public static int IsNonPairSize(Vector2 roomSize)
     {
-        if (roomSize.x % 2 == 0 && roomSize.y % 2 == 0)
+        if (roomSize.x % 2 != 0 && roomSize.y % 2 != 0)
         {
-            return false;
+            return 3; //is both non pair
+        }
+        else if (roomSize.x % 2 != 0)
+        {
+            return 2; //x is non pair
+        }
+        else if (roomSize.y % 2 != 0)
+        {
+            return 1; //y is non pair
         }
         else
         {
-            return true;
+            return 0; //is pair
         }
     }
 
@@ -26,19 +34,26 @@ public static class ColliderCalculation
         return size;
     }
 
-    public static Vector2 RoomColliderCenter(bool isNonPairSize)
+    public static Vector2 RoomColliderCenter(int isNonPairSize)
     {
         Vector2 center = new Vector2();
-        if (isNonPairSize)
-        {
-            center.x = 0;
-            center.y = 0;
-        }
-        else
+
+        if(isNonPairSize == 0)
         {
             center.x = -0.5f;
             center.y = -0.5f;
         }
+        else if (isNonPairSize == 1)
+        {
+            center.x = -0.5f;
+            center.y = 0.0f;
+        }
+        else if (isNonPairSize == 2)
+        {
+            center.x = 0.0f;
+            center.y = -0.5f;
+        }
+        //Debug.Log("isNonPairSize: " + isNonPairSize);
         return center;
     }
 
@@ -60,7 +75,7 @@ public static class ColliderCalculation
         return size;
     }
 
-    public static Vector2 HallwayColliderCenter(int hallLength, Vector2 roomSize, Vector2 direction, bool isNonPairSize, bool roomIsNonPairSize)
+    public static Vector2 HallwayColliderCenter(int hallLength, Vector2 roomSize, Vector2 direction, bool isNonPairSize, int roomIsNonPairSize)
     {
         Vector2 center = new Vector2();
     
@@ -68,40 +83,43 @@ public static class ColliderCalculation
         {
             center.x = ((roomSize.x / 2) + (hallLength / 2.0f)) * direction.x;
             center.y = 0;
+
+            if(roomIsNonPairSize == 0)
+            {
+                center.x -= 0.5f;
+                center.y -= 0.5f;
+            }
+            else if(roomIsNonPairSize == 1)
+            {
+                center.x -= 0.5f;
+                center.y -= 0.5f;
+            }
+            else
+            {
+                center.y -= 0.5f;
+            }
         }
         else if (direction.y != 0) // Vertical
         {
             center.x = 0;
             center.y = ((roomSize.y / 2) + (hallLength / 2.0f)) * direction.y;
-        }
 
-        if(isNonPairSize)
-        {
-            if(direction.x != 0)
+            if(roomIsNonPairSize == 0)
             {
-                center.y += 0.5f;
+                center.x -= 0.5f;
+                center.y -= 0.5f;
             }
-            else if(direction.y != 0)
+            else if(roomIsNonPairSize == 2)
             {
-                center.x += 0.5f;
+                center.x -= 0.5f;
+                center.y -= 0.5f;
             }
-        }
-
-        if(roomIsNonPairSize)
-        {
-            if(direction.x != 0)
+            else
             {
-                center.x += 0.5f;
-            }
-            else if(direction.y != 0)
-            {
-                center.y += 0.5f;
+                center.x -= 0.5f;
             }
         }
 
-        center.x -= 0.5f;
-        center.y -= 0.5f;
-    
         return center;
     }
 }
