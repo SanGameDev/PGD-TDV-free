@@ -20,7 +20,7 @@ public class DungeonGenerator : MonoBehaviour
     public int hallsWidth;
 
 
-    [Header("Tilemaps & Tiles")]
+    [Header("Tiles")]
     public Tile wallTile;
     public Tile floorTile;
     public Tile doorTile;
@@ -81,12 +81,13 @@ public class DungeonGenerator : MonoBehaviour
 
         GameObject roomRef = new GameObject("RoomReference");
 
-        roomRef.transform.position = grid.GetCellCenterWorld(new Vector3Int
+        Vector3 roomPosition = grid.GetCellCenterWorld(new Vector3Int
         (
             (int)initialPosition.x,
             (int)initialPosition.y,
             0
         ));
+        roomRef.transform.position = new Vector3(roomPosition.x, roomPosition.y, 0);
 
         roomRef.transform.SetParent(transform);
         roomsReferences.Add(roomRef.transform);
