@@ -14,10 +14,11 @@ public class DungeonGenerator : MonoBehaviour
     public Vector2Int roomsSize;
 
 
-    [Header("Halls")]
+    [Header("Halls & Doors")]
     //public bool hasHalls;
     public int hallsLength;
     public int hallsWidth;
+    public int doorsWidth;
 
 
     [Header("Tiles")]
@@ -208,7 +209,7 @@ public class DungeonGenerator : MonoBehaviour
 
             foreach (var neighbor in room.GetComponent<RoomPropeties>().neighbors)
             {
-                List<Vector2Int> doorsTilePosition = TileCalculate.DoorTilePosition(roomCenter, roomsSize, hallsWidth, neighbor);
+                List<Vector2Int> doorsTilePosition = TileCalculate.DoorTilePosition(roomCenter, roomsSize, doorsWidth, neighbor);
 
                 foreach (var doorPosition in doorsTilePosition)
                 {
