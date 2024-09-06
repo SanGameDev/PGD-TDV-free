@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "THE ULTRA MEGA UNITY PROCEDURAL GENERATION TOOL.sln"
+    "dotnet.defaultSolution": "PGD-TDV-free.sln"
 }
