@@ -19,6 +19,7 @@ public class DungeonGenerator : MonoBehaviour
     public int hallsLength;
     public int hallsWidth;
     public int doorsWidth;
+    public int roomConnectionChance;
 
 
     [Header("Tiles")]
@@ -194,6 +195,33 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         AddGenerationProgress(10);
+        ChanceToConnectRooms();
+    }
+
+    private void ChanceToConnectRooms()
+    {
+        foreach (var room in roomsReferences)
+        {
+            room.GetComponent<RoomPropeties>().connectedRooms = new List<RoomNeighbors>();
+            List<RoomNeighbors> neighbors = room.GetComponent<RoomPropeties>().neighbors;
+
+            if(neighbors.Count > 1)
+            {
+                foreach (var neighbor in neighbors)
+                {
+                    if(Random.Range(0, 100) < roomConnectionChance)
+                    {
+                        room.GetComponent<RoomPropeties>().connectedRooms.Add(neighbor);
+                        //Debug.Log("Connected rooms: " + room.name + " with " + neighbor);
+                    }
+                }
+            }
+            else
+            {
+                room.GetComponent<RoomPropeties>().connectedRooms.Add(neighbors[0]);  
+            }
+        }
+
         SetDoors();
     }
 
@@ -207,7 +235,7 @@ public class DungeonGenerator : MonoBehaviour
             Vector2Int roomPosition = (Vector2Int)grid.WorldToCell(room.position);
             Vector2Int roomCenter = TileCalculate.CalculateRoomCenter(roomsSize, roomPosition);
 
-            foreach (var neighbor in room.GetComponent<RoomPropeties>().neighbors)
+            foreach (var neighbor in room.GetComponent<RoomPropeties>().connectedRooms)
             {
                 List<Vector2Int> doorsTilePosition = TileCalculate.DoorTilePosition(roomCenter, roomsSize, doorsWidth, neighbor);
 
@@ -237,7 +265,7 @@ public class DungeonGenerator : MonoBehaviour
             Vector2Int roomPosition = (Vector2Int)grid.WorldToCell(room.position);
             Vector2Int roomCenter = TileCalculate.CalculateRoomCenter(roomsSize, roomPosition);
 
-            foreach (var neighbor in room.GetComponent<RoomPropeties>().neighbors)
+            foreach (var neighbor in room.GetComponent<RoomPropeties>().connectedRooms)
             {
                 List<Vector2Int> hallsTilePosition = TileCalculate.HallTilePosition(roomCenter, roomsSize, hallsWidth, neighbor, hallsLength);
                 List<Vector2Int> hallsWallTilePosition = TileCalculate.HallsWallsTilePosition(roomCenter, roomsSize, hallsWidth, neighbor, hallsLength);
@@ -291,7 +319,7 @@ public class DungeonGenerator : MonoBehaviour
 
             if(hallsLength > 0)
             {
-                foreach(var neighbor in room.GetComponent<RoomPropeties>().neighbors)
+                foreach(var neighbor in room.GetComponent<RoomPropeties>().connectedRooms)
                 {
                     if(neighbor == RoomNeighbors.North)
                     {
