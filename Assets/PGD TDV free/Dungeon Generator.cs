@@ -200,6 +200,8 @@ public class DungeonGenerator : MonoBehaviour
 
     private void ChanceToConnectRooms()
     {
+        RoomNeighbors neighborChosen = RoomNeighbors.North;
+
         foreach (var room in roomsReferences)
         {
             room.GetComponent<RoomPropeties>().connectedRooms = new List<RoomNeighbors>();
@@ -211,15 +213,16 @@ public class DungeonGenerator : MonoBehaviour
                 {
                     if(Random.Range(0, 100) < roomConnectionChance)
                     {
-                        room.GetComponent<RoomPropeties>().connectedRooms.Add(neighbor);
-                        //Debug.Log("Connected rooms: " + room.name + " with " + neighbor);
+                        neighborChosen = neighbor;
                     }
                 }
             }
             else
             {
-                room.GetComponent<RoomPropeties>().connectedRooms.Add(neighbors[0]);  
+                neighborChosen = neighbors[0];  
             }
+
+            Transform neighborTransform = CheckNeighbors.GetNeighborTransform(room, roomsReferences, roomsSize, hallsLength, neighborChosen);
         }
 
         SetDoors();

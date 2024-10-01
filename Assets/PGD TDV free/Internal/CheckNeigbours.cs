@@ -63,4 +63,46 @@ public static class CheckNeighbors
 
         return neighbors;
     }
+
+    public static Transform GetNeighborTransform(Transform room, List<Transform> roomsReferences, Vector2 roomSize, int hallsLength, RoomNeighbors direction)
+    {
+        if(direction == RoomNeighbors.North)
+        {
+            return roomsReferences.Find(x => x.position == new Vector3(room.position.x, room.position.y + DistanceToTheNeighbor(1, (int)roomSize.y, hallsLength), 0));
+        }
+        else if(direction == RoomNeighbors.South)
+        {
+            return roomsReferences.Find(x => x.position == new Vector3(room.position.x, room.position.y + DistanceToTheNeighbor(-1, (int)roomSize.y, hallsLength), 0));
+        }
+        else if(direction == RoomNeighbors.East)
+        {
+            return roomsReferences.Find(x => x.position == new Vector3(room.position.x + DistanceToTheNeighbor(1, (int)roomSize.x, hallsLength), room.position.y, 0));
+        }
+        else if(direction == RoomNeighbors.West)
+        {
+            return roomsReferences.Find(x => x.position == new Vector3(room.position.x + DistanceToTheNeighbor(-1, (int)roomSize.x, hallsLength), room.position.y, 0));
+        }
+
+        return null;
+    }
+
+    public static RoomNeighbors GetOppositeDirection(RoomNeighbors direction)
+    {
+        if(direction == RoomNeighbors.North)
+        {
+            return RoomNeighbors.South;
+        }
+        else if(direction == RoomNeighbors.South)
+        {
+            return RoomNeighbors.North;
+        }
+        else if(direction == RoomNeighbors.East)
+        {
+            return RoomNeighbors.West;
+        }
+        else
+        {
+            return RoomNeighbors.East;
+        }
+    }
 }
