@@ -151,16 +151,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20fa1564b8df35445a212f9b9a49fc59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfRooms: 15
+  numberOfRooms: 24
   initialPosition: {x: 0, y: 0}
   roomsSize: {x: 18, y: 10}
-  hallsLength: 5
+  hallsLength: 4
   hallsWidth: 4
   doorsWidth: 2
-  roomConnectionChance: 35
+  roomConnectionChance: 10
   wallTile: {fileID: 11400000, guid: 86cc6318cb48e764f95bb65566fbffd2, type: 2}
   floorTile: {fileID: 11400000, guid: a2d677e8c92a8554dbf18c337750a51b, type: 2}
   doorTile: {fileID: 11400000, guid: d89d6d852869e124189d7fae62fd3483, type: 2}
+  fightRoomSpawnRate: 0
+  chestRoomSpawnRate: 0
+  emptyRoomSpawnRate: 0
+  fightRoomCanCloseDoors: 0
+  dungeonGeneratorSo: {fileID: 11400000, guid: 70315dd10dcd2e04296768caab398d0d, type: 2}
   roomsReferences: []
   generationProgress: 0
 --- !u!4 &1770000612

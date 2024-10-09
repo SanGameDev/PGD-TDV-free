@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using PGD_TDV;
 
 public class DungeonGenerator : MonoBehaviour
 {
-    public int numberOfRooms;
+    public DungeonGeneratorSo dungeonGeneratorSo;
+
     
+    [Range(1, 500)]public int numberOfRooms;
 
     [Header("Rooms")]
     public Vector2Int initialPosition;
@@ -15,11 +18,10 @@ public class DungeonGenerator : MonoBehaviour
 
 
     [Header("Halls & Doors")]
-    //public bool hasHalls;
     public int hallsLength;
     public int hallsWidth;
     public int doorsWidth;
-    public int roomConnectionChance;
+    [Range(0, 100)] public int roomConnectionChance;
 
 
     [Header("Tiles")]
@@ -31,6 +33,13 @@ public class DungeonGenerator : MonoBehaviour
     private Tilemap wallsTileMap;
     private Tilemap floorsTileMap;
     private Tilemap doorsMap;
+
+    [Space(5)][Header("Room Properties"), Header("Spawn Rates")]
+    public int fightRoomSpawnRate;
+    public int chestRoomSpawnRate;
+    public int emptyRoomSpawnRate;
+    [Header("other properties")]
+    public bool fightRoomCanCloseDoors;
 
     [Space(5)][Header("Generation")]
     public List<Transform> roomsReferences;
@@ -132,9 +141,9 @@ public class DungeonGenerator : MonoBehaviour
 
             laps++;
 
-            if(laps > 1000)
+            if(laps > 5000)
             {
-                Debug.LogError("Wtf are you doing?");
+                Debug.LogWarning("Wtf are you doing? to much rooms fo the amount of iterations");
                 break;
             }
         }
@@ -147,8 +156,8 @@ public class DungeonGenerator : MonoBehaviour
         foreach (var room in roomsReferences)
         {
             room.AddComponent<RoomPropeties>().neighbors = new List<RoomNeighbors>();
+            room.GetComponent<RoomPropeties>().connectedRooms = new List<RoomNeighbors>();
         }
-
         SetRoomsNeighbors();
     }
 
@@ -204,7 +213,6 @@ public class DungeonGenerator : MonoBehaviour
 
         foreach (var room in roomsReferences)
         {
-            room.GetComponent<RoomPropeties>().connectedRooms = new List<RoomNeighbors>();
             List<RoomNeighbors> neighbors = room.GetComponent<RoomPropeties>().neighbors;
 
             if(neighbors.Count > 1)
@@ -223,9 +231,89 @@ public class DungeonGenerator : MonoBehaviour
             }
 
             Transform neighborTransform = CheckNeighbors.GetNeighborTransform(room, roomsReferences, roomsSize, hallsLength, neighborChosen);
+            if(roomsReferences.Contains(neighborTransform))
+            {
+                neighborTransform.GetComponent<RoomPropeties>().connectedRooms.Add(CheckNeighbors.GetOppositeDirection(neighborChosen));
+
+                if(!CheckNeighbors.CheckIfNeighborIsOnList(neighborChosen, room.GetComponent<RoomPropeties>().connectedRooms))
+                    room.GetComponent<RoomPropeties>().connectedRooms.Add(neighborChosen);
+
+                if(!CheckNeighbors.CheckIfNeighborIsOnList(CheckNeighbors.GetOppositeDirection(neighborChosen), neighborTransform.GetComponent<RoomPropeties>().connectedRooms))
+                    neighborTransform.GetComponent<RoomPropeties>().connectedRooms.Add(CheckNeighbors.GetOppositeDirection(neighborChosen));
+            }else
+            {
+                Debug.LogWarning("Room not connected" + room.position + " " + neighborChosen);
+            }
         }
 
-        SetDoors();
+        //SetDoors();
+        CheckConnectedRoomsToSpawn();
+    }
+
+    private void CheckConnectedRoomsToSpawn()
+    {
+        List<Transform> roomsToCheck = new List<Transform>{roomsReferences[0]};
+        HashSet<Transform> checkedRooms = new HashSet<Transform>();
+
+        for (int i = 0; i < roomsToCheck.Count; i++)
+        {
+            var room = roomsToCheck[i];
+            if (checkedRooms.Contains(room))
+                continue;
+
+            List<RoomNeighbors> connectedNeighbors = room.GetComponent<RoomPropeties>().connectedRooms;
+
+            foreach (var neighbor in connectedNeighbors)
+            {
+                Transform neighborTransform = CheckNeighbors.GetNeighborTransform(room, roomsReferences, roomsSize, hallsLength, neighbor);
+                if (neighborTransform != null && !checkedRooms.Contains(neighborTransform))
+                {
+                    roomsToCheck.Add(neighborTransform);
+                }
+            }
+
+            room.tag = "ConnectedToSpawn";
+            room.GetComponent<RoomPropeties>().isConnectedToMainRoom = true;
+            checkedRooms.Add(room);
+        }
+
+        ConnectRooms();
+        
+    }
+
+    private void ConnectRooms()
+    {
+        //checks if in the roomReferences list there is a room that is not connected to the main room
+        List<Transform> roomsNotConnected = roomsReferences.FindAll(x => x.GetComponent<RoomPropeties>().isConnectedToMainRoom == false);
+
+        if(roomsReferences.Exists(x => x.GetComponent<RoomPropeties>().isConnectedToMainRoom == false))
+        {
+            //if there is a room that is not connected to the main room, it will check if there is a room connected to the main room
+            foreach (var room in roomsNotConnected)
+            {
+                List<RoomNeighbors> neighborsToCheck = room.GetComponent<RoomPropeties>().neighbors;
+                //pick a random neighbor that is connected to the main room and connect the room to it
+                RoomNeighbors neighborChosen = neighborsToCheck[Random.Range(0, neighborsToCheck.Count)];
+                Transform neighborTransform = CheckNeighbors.GetNeighborTransform(room, roomsReferences, roomsSize, hallsLength, neighborChosen);
+
+                if(neighborTransform.GetComponent<RoomPropeties>().isConnectedToMainRoom)
+                {
+                    neighborTransform.GetComponent<RoomPropeties>().connectedRooms.Add(CheckNeighbors.GetOppositeDirection(neighborChosen));
+                    room.GetComponent<RoomPropeties>().connectedRooms.Add(neighborChosen);
+                    room.GetComponent<RoomPropeties>().isConnectedToMainRoom = true;
+                }
+                
+            }
+        }
+        
+        if(roomsReferences.Exists(x => x.GetComponent<RoomPropeties>().isConnectedToMainRoom == false))
+        {
+            ConnectRooms();
+        }
+        else
+        {
+            SetDoors();
+        }
     }
 
     //<summary>
@@ -359,6 +447,14 @@ public class DungeonGenerator : MonoBehaviour
         AddGenerationProgress(20);
     }
 
+    private void SetRoomsProperties()
+    {
+        foreach (var room in roomsReferences)
+        {
+            
+        }
+    }
+
     //<summary>
     //  This function adds the progress to the generation
     //</summary>
@@ -396,10 +492,4 @@ public class DungeonGenerator : MonoBehaviour
 }
 
 
-public enum RoomNeighbors
-{
-    North,
-    East,
-    South,
-    West
-}
+

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PGD_TDV;
 
 public static class CheckNeighbors
 {
@@ -104,5 +105,10 @@ public static class CheckNeighbors
         {
             return RoomNeighbors.East;
         }
+    }
+
+    public static bool CheckIfNeighborIsOnList(RoomNeighbors direction, List<RoomNeighbors> neighbors)
+    {
+        return neighbors.Contains(direction);
     }
 }

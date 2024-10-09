@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4015ba7e827845542bfa0a80ceaa21a7, type: 3}
+  m_Name: TestDungeonGenerator
+  m_EditorClassIdentifier: 
+  numberOfRooms: 24
+  initialPosition: {x: 0, y: 0}
+  roomsSize: {x: 18, y: 10}
+  hallsLength: 4
+  hallsWidth: 4
+  doorsWidth: 2
+  roomConnectionChance: 10
+  wallTile: {fileID: 11400000, guid: 86cc6318cb48e764f95bb65566fbffd2, type: 2}
+  floorTile: {fileID: 11400000, guid: a2d677e8c92a8554dbf18c337750a51b, type: 2}
+  doorTile: {fileID: 11400000, guid: d89d6d852869e124189d7fae62fd3483, type: 2}
