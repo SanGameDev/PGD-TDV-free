@@ -151,6 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20fa1564b8df35445a212f9b9a49fc59, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dungeonGeneratorSo: {fileID: 11400000, guid: 70315dd10dcd2e04296768caab398d0d, type: 2}
+  roomPropertiesSo: {fileID: 11400000, guid: 4d87ae263419f9149a9a1c5038a3073d, type: 2}
   numberOfRooms: 24
   initialPosition: {x: 0, y: 0}
   roomsSize: {x: 18, y: 10}
@@ -165,7 +167,7 @@ MonoBehaviour:
   chestRoomSpawnRate: 0
   emptyRoomSpawnRate: 0
   fightRoomCanCloseDoors: 0
-  dungeonGeneratorSo: {fileID: 11400000, guid: 70315dd10dcd2e04296768caab398d0d, type: 2}
+  collidersForCameraBounds: 0
   roomsReferences: []
   generationProgress: 0
 --- !u!4 &1770000612

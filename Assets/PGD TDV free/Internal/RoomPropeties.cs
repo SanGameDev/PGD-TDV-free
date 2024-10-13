@@ -22,7 +22,7 @@ public class RoomPropeties : MonoBehaviour
                 //Do nothing
                 break;
             case RoomType.empty:
-
+                //Do nothing
                 break;
             case RoomType.fight:
 
@@ -34,5 +34,10 @@ public class RoomPropeties : MonoBehaviour
 
                 break;
         }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other) 
+    {
+        //Camera.main
     }
 }

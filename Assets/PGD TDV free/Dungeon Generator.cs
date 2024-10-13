@@ -8,7 +8,7 @@ using PGD_TDV;
 public class DungeonGenerator : MonoBehaviour
 {
     public DungeonGeneratorSo dungeonGeneratorSo;
-
+    public RoomPropertiesSo roomPropertiesSo;
     
     [Range(1, 500)]public int numberOfRooms;
 
@@ -40,6 +40,7 @@ public class DungeonGenerator : MonoBehaviour
     public int emptyRoomSpawnRate;
     [Header("other properties")]
     public bool fightRoomCanCloseDoors;
+    public bool collidersForCameraBounds;
 
     [Space(5)][Header("Generation")]
     public List<Transform> roomsReferences;
@@ -58,7 +59,6 @@ public class DungeonGenerator : MonoBehaviour
 
         InstRoomRef();
     }
-
     public void ClearDungeon()
     {
         if(grid == null)
@@ -79,6 +79,7 @@ public class DungeonGenerator : MonoBehaviour
         generationProgress = 0;
     }
 
+#region Dungeon Generation
     private void InstRoomRef()
     {
         //<summary>
@@ -160,10 +161,6 @@ public class DungeonGenerator : MonoBehaviour
         }
         SetRoomsNeighbors();
     }
-
-    //<summary>
-    //  This function adds the neighbors to the rooms
-    //</summary>
     private void SetRoomsNeighbors()
     {
         foreach (var room in roomsReferences)
@@ -175,10 +172,6 @@ public class DungeonGenerator : MonoBehaviour
         AddGenerationProgress(20);
         SetRoomsTiles();
     }
-
-    //<summary>
-    //  This function sets the tiles for the rooms
-    //</summary>
     private void SetRoomsTiles()
     {
         foreach (var room in roomsReferences)
@@ -206,7 +199,6 @@ public class DungeonGenerator : MonoBehaviour
         AddGenerationProgress(10);
         ChanceToConnectRooms();
     }
-
     private void ChanceToConnectRooms()
     {
         RoomNeighbors neighborChosen = RoomNeighbors.North;
@@ -246,10 +238,8 @@ public class DungeonGenerator : MonoBehaviour
             }
         }
 
-        //SetDoors();
         CheckConnectedRoomsToSpawn();
     }
-
     private void CheckConnectedRoomsToSpawn()
     {
         List<Transform> roomsToCheck = new List<Transform>{roomsReferences[0]};
@@ -280,7 +270,6 @@ public class DungeonGenerator : MonoBehaviour
         ConnectRooms();
         
     }
-
     private void ConnectRooms()
     {
         //checks if in the roomReferences list there is a room that is not connected to the main room
@@ -315,10 +304,6 @@ public class DungeonGenerator : MonoBehaviour
             SetDoors();
         }
     }
-
-    //<summary>
-    //  This function sets the doors for the rooms
-    //</summary>
     private void SetDoors()
     {
         foreach (var room in roomsReferences)
@@ -345,10 +330,6 @@ public class DungeonGenerator : MonoBehaviour
             SetHalls();
         }
     }
-
-    //<summary>
-    //  This function sets the halls for the rooms
-    //</summary>
     private void SetHalls()
     {
         foreach (var room in roomsReferences)
@@ -374,13 +355,21 @@ public class DungeonGenerator : MonoBehaviour
         }
 
         AddGenerationProgress(10);
-        SetColliders();
+        PostGeneration();
     }
+#endregion
 
-    //<summary>
-    //  This function sets the colliders for the rooms
-    //</summary>
-    private void SetColliders()
+#region Post Generation
+    private void PostGeneration()
+    {
+        if(collidersForCameraBounds)
+        {
+            SetCollidersForCameraBounds();
+        }
+
+        
+    }
+    private void SetCollidersForCameraBounds()
     {
         int isNonPairSize = ColliderCalculation.IsNonPairSize(roomsSize);
         bool isNonPairHalls;
@@ -443,21 +432,12 @@ public class DungeonGenerator : MonoBehaviour
                 }
             }
         }
-
-        AddGenerationProgress(20);
     }
 
-    private void SetRoomsProperties()
-    {
-        foreach (var room in roomsReferences)
-        {
-            
-        }
-    }
+    
+#endregion
 
-    //<summary>
-    //  This function adds the progress to the generation
-    //</summary>
+#region Other Methods
     public void AddGenerationProgress(float progressToAdd)
     {
         StartCoroutine(IncrementProgress(progressToAdd));
@@ -489,7 +469,5 @@ public class DungeonGenerator : MonoBehaviour
         floorsTileMap.gameObject.AddComponent<TilemapRenderer>().sortingOrder = -2;
         doorsMap.gameObject.AddComponent<TilemapRenderer>().sortingOrder = -1;
     }
+#endregion
 }
-
-
-
